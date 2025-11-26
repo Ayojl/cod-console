@@ -12,7 +12,9 @@ import Products from "./pages/Products";
 import Categories from "./pages/Categories";
 import Tags from "./pages/Tags";
 import Colors from "./pages/Colors";
+import Inventory from "./pages/Inventory";
 import Orders from "./pages/Orders";
+import Blog from "./pages/Blog";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -78,11 +80,31 @@ const App = () => (
               }
             />
             <Route
+              path="/inventory"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <Inventory />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/orders"
               element={
                 <ProtectedRoute>
                   <DashboardLayout>
                     <Orders />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/blog"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <Blog />
                   </DashboardLayout>
                 </ProtectedRoute>
               }
