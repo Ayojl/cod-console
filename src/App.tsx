@@ -9,6 +9,7 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
+import ProductForm from "./pages/ProductForm";
 import Categories from "./pages/Categories";
 import Tags from "./pages/Tags";
 import Colors from "./pages/Colors";
@@ -45,6 +46,26 @@ const App = () => (
                 <ProtectedRoute>
                   <DashboardLayout>
                     <Products />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/products/new"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <ProductForm />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/products/:id"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <ProductForm />
                   </DashboardLayout>
                 </ProtectedRoute>
               }
