@@ -54,14 +54,12 @@ export function AppSidebar() {
   return (
     <Sidebar className={isCollapsed ? "w-14" : "w-60"}>
       <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Package className="h-5 w-5 text-primary-foreground" />
-          </div>
+        <div className="flex items-center gap-3">
+          <img src="/src/assets/logo.png" alt="AP Logo" className="h-10 w-10 object-contain" />
           {!isCollapsed && (
             <div className="flex flex-col">
-              <span className="text-sm font-semibold">Electronics Admin</span>
-              <span className="text-xs text-muted-foreground">Backoffice</span>
+              <span className="text-sm font-bold text-primary">ANASS PHONE</span>
+              <span className="text-xs text-sidebar-foreground/70">Admin Panel</span>
             </div>
           )}
         </div>

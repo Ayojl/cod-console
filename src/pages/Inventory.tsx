@@ -89,7 +89,7 @@ export default function Inventory() {
           {
             product_id: selectedProduct.id,
             adjustment: adjustmentValue,
-            reason,
+            reason: reason as "restock" | "correction" | "damage" | "return" | "sale",
             notes,
           },
         ]);
