@@ -7,6 +7,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { Upload, X } from "lucide-react";
+
+declare global {
+  interface Window {
+    cloudinary: any;
+  }
+}
 
 export default function Settings() {
   const [loading, setLoading] = useState(true);
@@ -42,6 +49,49 @@ export default function Settings() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const openCloudinaryWidget = (fieldName: "logo" | "featured_banner") => {
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+    if (!cloudName || !uploadPreset) {
+      toast.error("Cloudinary configuration missing. Please add CLOUDINARY_CLOUD_NAME and CLOUDINARY_UPLOAD_PRESET.");
+      return;
+    }
+
+    if (!window.cloudinary) {
+      const script = document.createElement("script");
+      script.src = "https://upload-widget.cloudinary.com/global/all.js";
+      script.async = true;
+      script.onload = () => openWidget(cloudName, uploadPreset, fieldName);
+      document.body.appendChild(script);
+    } else {
+      openWidget(cloudName, uploadPreset, fieldName);
+    }
+  };
+
+  const openWidget = (cloudName: string, uploadPreset: string, fieldName: "logo" | "featured_banner") => {
+    const widget = window.cloudinary.createUploadWidget(
+      {
+        cloudName,
+        uploadPreset,
+        sources: ["local", "url", "camera"],
+        multiple: false,
+        resourceType: "image",
+      },
+      (error: any, result: any) => {
+        if (error) {
+          toast.error("Upload failed");
+          return;
+        }
+        if (result.event === "success") {
+          setSettings({ ...settings, [fieldName]: result.info.secure_url });
+          toast.success("Image uploaded successfully");
+        }
+      }
+    );
+    widget.open();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -93,6 +143,50 @@ export default function Settings() {
                 value={settings.store_name}
                 onChange={(e) => setSettings({ ...settings, store_name: e.target.value })}
               />
+            </div>
+            
+            <div className="space-y-2">
+              <Label>Store Logo</Label>
+              <div className="flex items-center gap-4">
+                {settings.logo && (
+                  <div className="relative">
+                    <img src={settings.logo} alt="Store logo" className="h-20 w-20 object-contain rounded-md border" />
+                    <button
+                      type="button"
+                      onClick={() => setSettings({ ...settings, logo: "" })}
+                      className="absolute -top-2 -right-2 p-1 bg-destructive text-destructive-foreground rounded-full"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                )}
+                <Button type="button" variant="outline" onClick={() => openCloudinaryWidget("logo")}>
+                  <Upload className="mr-2 h-4 w-4" />
+                  {settings.logo ? "Change Logo" : "Upload Logo"}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Featured Banner</Label>
+              <div className="flex items-center gap-4">
+                {settings.featured_banner && (
+                  <div className="relative">
+                    <img src={settings.featured_banner} alt="Banner" className="h-20 w-40 object-cover rounded-md border" />
+                    <button
+                      type="button"
+                      onClick={() => setSettings({ ...settings, featured_banner: "" })}
+                      className="absolute -top-2 -right-2 p-1 bg-destructive text-destructive-foreground rounded-full"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                )}
+                <Button type="button" variant="outline" onClick={() => openCloudinaryWidget("featured_banner")}>
+                  <Upload className="mr-2 h-4 w-4" />
+                  {settings.featured_banner ? "Change Banner" : "Upload Banner"}
+                </Button>
+              </div>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
